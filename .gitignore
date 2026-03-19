@@ -1,12 +1,12 @@
-Proctfile
-Vendor
-src/smtp.php
-src/database.php
-combined.php
-test.php
-tests.php
-composer.lock
-vendor
-global.php
-.idea/
+# Proctfile
+# Vendor
+# src/smtp.php
+# src/database.php
+# combined.php
+# test.php
+# tests.php
+# composer.lock
+# vendor
+# global.php
+# .idea/
 

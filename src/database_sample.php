@@ -2,8 +2,8 @@
 return [
     'database' => [
         'servername' => 'localhost',
-        'database' => 'sample',
-        'username' => 'sample',
-        'password' => 'sample',
+        'database' => 'leave-management',
+        'username' => 'root',
+        'password' => 'desparado',
     ]
 ];

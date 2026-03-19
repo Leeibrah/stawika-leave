@@ -4,8 +4,9 @@ require __DIR__ . "/messages/message.php";
 
 <header id="header" class="fixed-top">
     <div class="container d-flex align-items-center">
-        <a href="/" class="logo me-auto"><img src="/views/assets/frontend/images/leave2-logo.png" alt="leave-logo"
-                class="img-fluid"></a>
+        <a href="/" class="logo me-auto">
+            <img src="https://stawika.co.ke/images/logo.png" alt="leave-logo" class="img-fluid">
+        </a>
 
         <nav id="navbar" class="navbar">
             <ul>
@@ -24,8 +25,8 @@ require __DIR__ . "/messages/message.php";
         <div class="row">
             <div class="col-lg-6 d-flex flex-column justify-content-center pt-4 pt-lg-0 order-2 order-lg-1"
                 data-aos="fade-up" data-aos-delay="200">
-                <h1>Better Solution For Managing and Applying Leave</h1>
-                <h2>Welcome to Leave Management System. Apply and track the progress at your own
+                <h1>Stawika Leave Management Portal</h1>
+                <h2>Welcome to Stawika Leave Management System. Apply and track the progress at your own
                     time.</h2>
             </div>
             <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-in" data-aos-delay="200">
@@ -71,7 +72,7 @@ require __DIR__ . "/messages/message.php";
     </section><!-- End About Us Section -->
 
     <!-- ======= Frequently Asked Questions Section ======= -->
-    <section id="faq" class="faq section-bg">
+    <!-- <section id="faq" class="faq section-bg">
         <div class="container" data-aos="fade-up">
 
             <div class="section-title">
@@ -144,7 +145,8 @@ require __DIR__ . "/messages/message.php";
                 </ul>
             </div>
         </div>
-    </section><!-- End Frequently Asked Questions Section -->
+    </section> -->
+    <!-- End Frequently Asked Questions Section -->
 </main><!-- End #main -->
 
 <!-- ======= Footer ======= -->

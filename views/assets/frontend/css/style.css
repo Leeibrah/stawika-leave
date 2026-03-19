@@ -245,7 +245,7 @@ body {
 
 /* -----------Footer section css------------ */
 #footer {
-  background-image: linear-gradient(to right, #6b7b8b, #4b555f) !important;
+  background-image: linear-gradient(to right, ##EC7035, #4b555f) !important;
   color: #fff;
 }
 
@@ -271,7 +271,7 @@ body {
   text-align: center;
   padding-top: 7px;
   border-radius: 2px;
-  background-image: linear-gradient(to left, #a517ba, #5f1782) !important;
+  background-image: linear-gradient(to left, ##EC7035, ##EC7035) !important;
 }
 
 .footer-box .form-control {

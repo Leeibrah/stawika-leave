@@ -6,8 +6,8 @@
             <div class="col-sm-6 text-end">
                 Copyright &copy;
                 <?php echo date("Y"); ?>
-                <br>Designed By Ronald Kimeli
-                <a href="mailto: kimeliryans@gmail.com" target="_blank">kimeliryans@gmail.com</a>
+                Stawika Capital Limited
+                <!-- <a href="mailto: kimeliryans@gmail.com" target="_blank">kimeliryans@gmail.com</a> -->
             </div>
         </div>
     </div>

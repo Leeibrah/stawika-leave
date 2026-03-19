@@ -3,27 +3,20 @@
   <div class="container">
     <div class="row">
       <div class="col-md-4 footer-box">
-        <img src="/views/assets/frontend/images/leave2-logo.png" alt="">
-        <p>Best Online Leave Management System. Apply at your own time,anywhere.</p>
+        <img src="https://stawika.co.ke/images/logo.png" alt="">
+        <p>Stawika Leave Management System. Apply at your own time,anywhere.</p>
       </div>
       <div class="col-md-4 footer-box">
         <p><b>CONTACT US</b></p>
-        <p><i class="fa fa-map-marker"></i>Shimmer Tech, Kenya.</p>
-        <p><i class="fa fa-phone"></i> +254 798298834</p>
-        <p><i class="fa fa-envelope"></i> kimeliryans@gmail.com</p>
-      </div>
-      <div class="col-md-4 footer-box">
-        <p><b>Let's talk</b></p>
-        <input type="text" class="form-control" placeholder="Your Email">
-        <textarea name="message" id="emailmessage" class="form-control" placeholder="Type your message here..." cols="auto" rows="auto"></textarea>
-        <button type="button" class="btn btn-primary">Send</button>
+        <p><i class="fa fa-map-marker"></i>Stawika Capital Limited.</p>
+        <p><i class="fa fa-phone"></i> +254 780 62 62 42</p>
+        <p><i class="fa fa-envelope"></i>info@stawika.co.ke</p>
       </div>
     </div>
     <hr />
     <div class="col-md-8 float-end">
       Copyright &copy;
-      <?php echo date("Y"); ?><br>Designed By Ronald Kimeli
-      <a href="mailto: kimeliryans@gmail.com" target="_blank">kimeliryans@gmail.com</a>
+      <?php echo date("Y"); ?> Stawika Capital Limited
     </div>
   </div>
 </section>
