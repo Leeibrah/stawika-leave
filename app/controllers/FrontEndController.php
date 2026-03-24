@@ -244,7 +244,8 @@ class FrontEndController extends Controller
     public function signin($request)
     {
         if ($request['login_btn'] === "Login") {
-            $password = $this->parseInput($request['password']);
+            // $password = $this->parseInput($request['password']);
+            $password = $request['password'];
             $email = $this->parseInput($request['email']);
 
             // Check for empty fields
@@ -295,6 +296,7 @@ class FrontEndController extends Controller
             return View::redirect('/login', "Method Not allowed", "success");
         }
     }
+
     public function forgotPassword()
     {
         $headerTitle = 'Forgot Password';
