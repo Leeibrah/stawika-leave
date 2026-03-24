@@ -333,7 +333,7 @@ class FrontEndController extends Controller
                             <h5> Ensure to reset password before the link expire</h5>
                             <br/><br/>
                             
-                            <a href='http://localhost:8000/reset_password?code=$code'>Click me</a>
+                            <a href='https://leave.stawika.co.ke/reset_password?code=$code'>Click me</a>
                             ";
 
             $mail->Body = $mail_template;
@@ -416,7 +416,7 @@ class FrontEndController extends Controller
                 <div class='container'>
                     <h2>Welcome to Stawika Leave Management System!</h2>
                     <h5>Thank you for registering. Please verify your email address by clicking the link below:</h5>
-                    <a href='http://localhost:8000/verify_email?token=$verify_token'>Verify Your Email</a>
+                    <a href='https://leave.stawika.co.ke/verify_email?token=$verify_token'>Verify Your Email</a>
                 </div>
             </body>
             </html>
