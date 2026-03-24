@@ -6,8 +6,11 @@ class AlertMessage {
         if (isset($_SESSION['message']) && isset($_SESSION['message_code'])) {
             $message = $_SESSION['message'];
             $message_code = $_SESSION['message_code'];
+            $type = ($message_code === 'error') ? 'danger' : $message_code;
             ?>
-            <div id="alertMessage" class="alert alert-<?= $message_code ?> alert-dismissible fade show" role="alert" style="transition: opacity 1s ease;">
+           
+            <!-- <div id="alertMessage" class="alert alert-<?= $message_code ?> alert-dismissible fade show" role="alert" style="transition: opacity 1s ease;"> -->
+            <div id="alertMessage" class="alert alert-<?= $type ?> alert-dismissible fade show" role="alert" style="transition: opacity 1s ease;">
                 <?= $message ?> .
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>

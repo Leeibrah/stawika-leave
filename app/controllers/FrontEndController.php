@@ -13,7 +13,7 @@ class FrontEndController extends Controller
 {
     public function index()
     {
-        $headerTitle = 'Home';
+        $headerTitle = 'Leave App :: Stawika';
         if (isset($_SESSION['message']) && isset($_SESSION['message_code'])) {
             return View::render('frontend.welcome', null, $headerTitle, $_SESSION['message'], $_SESSION['message_code'], 200);
         }
@@ -21,17 +21,45 @@ class FrontEndController extends Controller
         return View::render('frontend.welcome', null, $headerTitle, $message = null, $messageCode = null, 200);
     }
 
+    // public function registerForm()
+    // {
+    //     $departments = Department::model()->all();
+
+    //     $headerTitle = 'Sign Up';
+    //     if (isset($_SESSION['message']) && isset($_SESSION['message_code'])) {
+    //         return View::render('frontend.register', ['departments' => $departments], $headerTitle, $_SESSION['message'], $_SESSION['message_code'], 200);
+    //     }
+
+    //     return View::render('frontend.register', ['departments' => $departments], $headerTitle, $message = null, $messageCode = null, 200);
+    // }
+
     public function registerForm()
     {
         $departments = Department::model()->all();
-
         $headerTitle = 'Sign Up';
+
+        $message = null;
+        $messageCode = null;
+
         if (isset($_SESSION['message']) && isset($_SESSION['message_code'])) {
-            return View::render('frontend.register', ['departments' => $departments], $headerTitle, $_SESSION['message'], $_SESSION['message_code'], 200);
+            $message = $_SESSION['message'];
+            $messageCode = $_SESSION['message_code'];
+
+            // ✅ VERY IMPORTANT: clear after reading (flash behavior)
+            unset($_SESSION['message']);
+            unset($_SESSION['message_code']);
         }
 
-        return View::render('frontend.register', ['departments' => $departments], $headerTitle, $message = null, $messageCode = null, 200);
+        return View::render(
+            'frontend.register',
+            ['departments' => $departments],
+            $headerTitle,
+            $message,
+            $messageCode,
+            200
+        );
     }
+
     public function showResetPasswordForm($request)
     {
         $reset_token = $this->parseInput($request['code']);
@@ -161,11 +189,38 @@ class FrontEndController extends Controller
                 } else {
                     $response = $user->save();
                     if ($response['status'] === 'error') {
-                        return View::redirect('/register', $response['message'], "error", 302);
+
+                        $_SESSION['flash_message'] = [
+                            'type' => 'error',
+                            'message' => 'Email has already been taken'
+                            // 'message' => $response['message']
+                        ];
+
+                        $_SESSION['test'] = "Session works";
+
+                        var_dump($_SESSION);
+                        exit;
+
+                        return View::redirect('/register', "One", "error", 302);
+                        // return View::redirect('/register', null, null, 302);
+                        // return View::redirect('/register', $response['message'], "error", 302);
                     } else if ($response['status'] === 'success') {
                         $send_verification = $this->sendemail_verify("$user->first_name", "$user->last_name", "$user->email", "$user->verify_token");
+                        // if ($send_verification) {
+                        //     return View::redirect('/login', 'Registered successfully! Please verify your Email address to login!', "success", 302);
+                        // }
                         if ($send_verification) {
-                            return View::redirect('/login', 'Registered successfully! Please verify your Email address to login!', "success", 302);
+                            $_SESSION['message'] = 'Registered successfully! Please verify your Email address to login!';
+                            $_SESSION['message_code'] = 'success';
+
+                            header("Location: /login");
+                            exit;
+                        } else {
+                            $_SESSION['message'] = 'Registered, but email could not be sent. Contact admin.';
+                            $_SESSION['message_code'] = 'error';
+
+                            header("Location: /register");
+                            exit;
                         }
                     }
                 }
@@ -174,6 +229,8 @@ class FrontEndController extends Controller
             }
         }
     }
+
+
 
     public function login()
     {
@@ -269,7 +326,7 @@ class FrontEndController extends Controller
 
             //Content
             $mail->isHTML(true);
-            $mail->Subject = "Password reset from Leave_Management System";
+            $mail->Subject = "Password reset from Stawika Leave_Management System";
 
             $mail_template = "
                             <h2> Reset the password using the link</h2>
@@ -306,11 +363,12 @@ class FrontEndController extends Controller
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587; 
 
-            $mail->setFrom($smtp['from'], $fname . ' ' . $lname);
+            // $mail->setFrom($smtp['from'], $fname . ' ' . $lname);
+            $mail->setFrom($smtp['from'], "Leave Management System");
             $mail->addAddress($email); 
 
             $mail->isHTML(true);
-            $mail->Subject = "Account Verification from Leave Management System";
+            $mail->Subject = "Account Verification from Stawika Leave Management System";
             $mail_template = "
             <!DOCTYPE html>
             <html lang='en'>
@@ -356,7 +414,7 @@ class FrontEndController extends Controller
             </head>
             <body>
                 <div class='container'>
-                    <h2>Welcome to Leave Management System!</h2>
+                    <h2>Welcome to Stawika Leave Management System!</h2>
                     <h5>Thank you for registering. Please verify your email address by clicking the link below:</h5>
                     <a href='http://localhost:8000/verify_email?token=$verify_token'>Verify Your Email</a>
                 </div>
@@ -367,7 +425,10 @@ class FrontEndController extends Controller
             $mail->send();
             return true;
         } catch (Exception $e) {
-            return false;
+            // return false;
+            echo "Mailer Error: " . $e->getMessage();
+            
+            exit;
         }
     }
 

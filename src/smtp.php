@@ -4,8 +4,8 @@ return [
         'host' => 'smtp.zoho.com',
         'port' => 587,
         'encryption' => 'tls',
-        'from' => 'no-reply@stawika.co.ke', // must be a valid Zoho email
-        'username' => 'no-reply@stawika.co.ke',
-        'password' => 'WnvmzpZzGXbU',
+        'from' => 'info@stawika.co.ke', // must be a valid Zoho email
+        'username' => 'info@stawika.co.ke',
+        'password' => '8PUzcsKEXpS7',
     ]
 ];

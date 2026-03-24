@@ -46,15 +46,15 @@ class Seeder
                 echo "No seeding defined for table '$tableName'.";
         }
     }
-    public function seedUsers($count = 20)
+    public function seedUsers($count = 5)
     {
         $startTime = microtime(as_float: true);
         $faker = FakerFactory::create();
 
         // Custom user data
         $customUsers = [
-            ['first_name' => 'Janet', 'last_name' => 'Beller', 'gender' => 'Female', 'email' => 'employee@gmail.com', 'role_id' => 3, 'verify_status' => 'verified'],
-            ['first_name' => 'John', 'last_name' => 'Doe', 'gender' => 'Male', 'email' => 'admin@gmail.com', 'role_id' => 1, 'verify_status' => 'verified']
+            ['first_name' => 'Lee', 'last_name' => 'Ibrahim', 'gender' => 'Male', 'email' => 'lee@stawika.co.ke', 'role_id' => 1, 'verify_status' => 'verified'],
+            ['first_name' => 'Janet', 'last_name' => 'Mugesi', 'gender' => 'Female', 'email' => 'jmogeshi@stawika.co.ke', 'role_id' => 1, 'verify_status' => 'verified']
         ];
 
         for ($i = 0; $i < $count; $i++) {
@@ -72,12 +72,12 @@ class Seeder
                 $last_name = $faker->lastName;
                 $gender = $faker->randomElement(['Male', 'Female']);
                 $email = $faker->unique()->safeEmail;
-                $role_id = $faker->numberBetween(1, 10);
+                $role_id = $faker->numberBetween(1, 3);
                 $verify_status = $faker->randomElement(['verified', 'pending']);
             }
 
-            $department_id = $faker->numberBetween(1, 10); // Assuming departments already seeded
-            $password = password_hash('password123', PASSWORD_DEFAULT);
+            $department_id = $faker->numberBetween(1, 8); // Assuming departments already seeded
+            $password = password_hash('passworpassword123d123', PASSWORD_DEFAULT);
             $verify_token = md5($email);
             $status = $faker->randomElement(['active', 'disabled']);
             $reset_token = null;
@@ -94,7 +94,7 @@ class Seeder
     }
 
 
-    public function seedDepartments($count = 20)
+    public function seedDepartments($count = 9)
     {
         $startTime = microtime(as_float: true);
         $faker = FakerFactory::create();
@@ -108,18 +108,7 @@ class Seeder
             'IT',
             'Customer Service',
             'Research and Development',
-            'Production',
-            'Quality Assurance',
-            'Logistics',
-            'Legal',
-            'Procurement',
-            'Public Relations',
-            'Administration',
-            'Engineering',
-            'Operations',
-            'Training and Development',
-            'Health and Safety',
-            'Compliance',
+            'Business Development',
             'Executive'
         ];
 
@@ -143,7 +132,7 @@ class Seeder
     }
 
 
-    public function seedRoles($count = 20)
+    public function seedRoles($count = 4)
     {
         $startTime = microtime(as_float: true);
         $faker = FakerFactory::create();
@@ -244,14 +233,14 @@ class Seeder
     }
 
 
-    public function seedAppliedLeaves($count = 20)
+    public function seedAppliedLeaves($count = 1)
     {
         $startTime = microtime(as_float: true);
         $faker = FakerFactory::create();
     
         for ($i = 0; $i < $count; $i++) {
-            $applied_by = $faker->numberBetween(1, 10);
-            $leavetype_id = $faker->numberBetween(1, 10);
+            $applied_by = $faker->numberBetween(1, 5);
+            $leavetype_id = $faker->numberBetween(1, 5);
             $description = $faker->sentence;
             $from_date = $faker->dateTimeBetween('-1 month', '+1 month')->format('Y-m-d');
             $to_date = $faker->dateTimeBetween($from_date, '+1 month')->format('Y-m-d');

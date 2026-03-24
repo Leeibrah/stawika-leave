@@ -16,9 +16,9 @@ include 'authentication.php';
   <meta name="description"
     content="<?= isset($description) ? htmlspecialchars($description) : 'Default Description' ?>">
   <!-- FAVICON -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/views/assets/frontend/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/views/assets/frontend/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/views/assets/frontend/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://stawika.co.ke/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://stawika.co.ke/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://stawika.co.ke/favicon.png">
 
   <link rel="mask-icon" href="/views/assets/frontend/safari-pinned-tab.svg" color="#5bbad5">
   <meta name="msapplication-TileColor" content="#da532c">

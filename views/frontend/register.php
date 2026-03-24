@@ -1,6 +1,23 @@
+
 <?php
-$departments = $data ? $data->departments : null;
+    $departments = $data ? $data->departments : null;
 ?>
+
+<?php
+if (isset($_SESSION['test'])) {
+    echo $_SESSION['test'];
+}
+?>
+
+<?php if (!empty($message)): ?>
+    <script>
+        <?php if ($messageCode === 'error'): ?>
+            alert("Error: <?= addslashes($message) ?>");
+        <?php else: ?>
+            alert("Success: <?= addslashes($message) ?>");
+        <?php endif; ?>
+    </script>
+<?php endif; ?>
 
 <main id="register">
     <div class="row justify-content-center">
@@ -10,11 +27,23 @@ $departments = $data ? $data->departments : null;
             
                     <div class="row">
                         <div class="col-lg-5 d-none d-lg-block bg-register-image bg-blue"></div>
+
+                        
+
                         <div class="col-lg-7">
                             <div class="p-5">
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                                 </div>
+
+                                <?php if (isset($_SESSION['flash_message'])): ?>
+                                    <div class="alert alert-<?php echo $_SESSION['flash_message']['type'] === 'error' ? 'danger' : 'success'; ?>">
+                                        <?php echo $_SESSION['flash_message']['message']; ?>
+                                    </div>
+                                    <?php unset($_SESSION['flash_message']); ?>
+                                <?php endif; ?>
+
+
                                 <form class="user" action="/register" method="post">
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
