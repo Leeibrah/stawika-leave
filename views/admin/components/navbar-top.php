@@ -27,7 +27,7 @@
         <span class="mr-2 d-none d-lg-inline text-white small">
           <?= $_SESSION['auth_user']['user_name'] ?>
         </span>
-        <img class="img-profile rounded-circle" src="/views/assets/frontend/images/user2.jpg" alt="Profile"
+        <img class="img-profile rounded-circle" src="/views/assets/img/avatar.png" alt="Profile"
           style="height: 30px; width: 30px">
       </a>
       <!-- Dropdown - User Information -->
