@@ -1,4 +1,8 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -72,6 +76,8 @@ Route::group('sessionAuth', function () {
 
     // dashboard admin
     Route::get('/admin/profile', ['controller' => DashboardController::class, 'method' => 'profile']);
+    Route::post('/admin/profile/update', ['controller' => DashboardController::class, 'method' => 'updateProfile']);
+    
     Route::get('/admin/dashboard', ['controller' => DashboardController::class, 'method' => 'dashboard']);
     Route::post('/admin/logout', ['controller' => DashboardController::class, 'method' => 'logout']);
 
@@ -81,6 +87,7 @@ Route::group('sessionAuth', function () {
     // Employee
     Route::get('/employee/department', ['controller' => EmployerController::class, 'method' => 'employeeDepartment']);
     Route::get('/employee/profile', ['controller' => EmployerController::class, 'method' => 'employeeProfile']);
+    Route::post('/employee/profile/update', ['controller' => EmployerController::class, 'method' => 'updateProfile']);
     Route::post('/employee/logout', ['controller' => EmployerController::class, 'method' => 'employeeLogout']);
     Route::get('/employee/appliedleaves', ['controller' => EmployerController::class, 'method' => 'employeeAppliedleaves']);
     Route::get('/employee/leavetypes', ['controller' => EmployerController::class, 'method' => 'employeeLeavetypes']);

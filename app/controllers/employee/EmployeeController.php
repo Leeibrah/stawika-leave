@@ -22,6 +22,81 @@ class EmployeeController extends Controller
         return View::render('employee.profile', $viewData,  $headerTitle, $message = null, $messageCode = null, 200);
     }
 
+    // public function updateProfile($request)
+    // {
+    //     if (isset($request['update_profile'])) {
+
+    //         $userEmail = $_SESSION['auth_user']['user_email'];
+
+    //         $user = User::model()->where(['email' => $userEmail])->first();
+
+    //         if (!$user) {
+    //             $_SESSION['message'] = "User not found";
+    //             $_SESSION['message_code'] = "danger";
+    //             header("Location: /profile");
+    //             exit;
+    //         }
+
+    //         // Update fields
+    //         $user->first_name = trim($request['first_name']);
+    //         $user->last_name = trim($request['last_name']);
+    //         $user->email = trim($request['email']);
+
+    //         $response = $user->save();
+
+    //         if ($response['status'] === 'success') {
+    //             $_SESSION['message'] = "Profile updated successfully";
+    //             $_SESSION['message_code'] = "success";
+    //         } else {
+    //             $_SESSION['message'] = $response['message'];
+    //             $_SESSION['message_code'] = "danger";
+    //         }
+
+    //         header("Location: /employee/profile");
+    //         exit;
+    //     }
+    // }
+
+    public function updateProfile($request)
+    {
+        $email = $_SESSION['auth_user']['user_email'];
+
+        $users = User::model()->where(['email' => $email])->get();
+
+        if (!$users || count($users) === 0) {
+            $_SESSION['message'] = "User not found";
+            $_SESSION['message_code'] = "danger";
+            header("Location: /employee/profile");
+            exit;
+        }
+
+        $user = $users[0];
+
+        $user->first_name = $_POST['first_name'] ?? '';
+        $user->last_name  = $_POST['last_name'] ?? '';
+        $user->email      = $_POST['email'] ?? '';
+
+        $response = $user->save();
+
+        if ($response['status'] === 'success') {
+
+            $_SESSION['auth_user']['user_name'] =
+                $user->first_name . ' ' . $user->last_name;
+
+            $_SESSION['auth_user']['user_email'] = $user->email;
+
+            $_SESSION['message'] = "Profile updated successfully";
+            $_SESSION['message_code'] = "success";
+
+        } else {
+            $_SESSION['message'] = $response['message'];
+            $_SESSION['message_code'] = "danger";
+        }
+
+        header("Location: /employee/profile");
+        exit;
+    }
+
     public function employeeDepartment()
     {
         $email = $_SESSION['auth_user']['user_email'];
@@ -129,22 +204,112 @@ class EmployeeController extends Controller
         return View::render('employee.applyleave', $viewData,  $headerTitle, $message = null, $messageCode = null, 200);
     }
 
+    // public function employeeApplyleave($request)
+    // {
+    //     if (isset($request['apply_leave'])) {
+    //         $leave = new AppliedLeave();
+    //         $leave->applied_by = $this->parseInput($request['applied_by']);
+    //         $leave->leavetype_id = $this->parseInput($request['leavetype_id']);
+    //         $leave->description = $this->parseInput($request['description']);
+    //         $leave->from_date = date('Y-m-d', strtotime($request['from_date']));
+    //         $leave->to_date = date('Y-m-d', strtotime($request['to_date']));
+
+    //         $response = $leave->save();
+    //         if ($response['status'] === 'error') {
+    //             View::redirect('/employee/appliedleaves', $response['message'], "danger", 302);
+    //         } else if ($response['status'] === 'success') {
+    //             View::redirect('/employee/appliedleaves', $response['message'], "success", 302);
+    //         }
+    //     }
+    // }
+
     public function employeeApplyleave($request)
     {
         if (isset($request['apply_leave'])) {
+
             $leave = new AppliedLeave();
-            $leave->applied_by = $this->parseInput($request['applied_by']);
+            $leave->applied_by   = $this->parseInput($request['applied_by']);
             $leave->leavetype_id = $this->parseInput($request['leavetype_id']);
-            $leave->description = $this->parseInput($request['description']);
-            $leave->from_date = date('Y-m-d', strtotime($request['from_date']));
-            $leave->to_date = date('Y-m-d', strtotime($request['to_date']));
+            $leave->description  = $this->parseInput($request['description']);
+            $leave->from_date    = date('Y-m-d', strtotime($request['from_date']));
+            $leave->to_date      = date('Y-m-d', strtotime($request['to_date']));
 
             $response = $leave->save();
+
             if ($response['status'] === 'error') {
-                View::redirect('/employee/appliedleaves', $response['message'], "danger", 302);
-            } else if ($response['status'] === 'success') {
-                View::redirect('/employee/appliedleaves', $response['message'], "success", 302);
+                return View::redirect('/employee/appliedleaves', $response['message'], "danger", 302);
             }
+
+            if ($response['status'] === 'success') {
+
+                // ✅ Get logged-in employee
+                $employeeEmail = $_SESSION['auth_user']['user_email'];
+                $employeeName  = $_SESSION['auth_user']['user_name'];
+
+                // ✅ Get admins (assuming role = admin)
+                $admins = \app\models\User::model()->where(['role_id' => 1])->get();
+
+                // ✅ Send email to employee
+                $this->sendLeaveEmail(
+                    $employeeName,
+                    $employeeEmail,
+                    "Leave Application Submitted",
+                    "Your leave from {$leave->from_date} to {$leave->to_date} has been submitted successfully."
+                );
+
+                // ✅ Send email to all admins
+                if ($admins) {
+                    foreach ($admins as $admin) {
+                        $this->sendLeaveEmail(
+                            $admin->first_name . ' ' . $admin->last_name,
+                            $admin->email,
+                            "New Leave Application",
+                            "{$employeeName} applied for leave from {$leave->from_date} to {$leave->to_date}.",
+                            "Login to https://leave.stawika.co.ke to check the status of the leave request."
+                        );
+                    }
+                }
+
+                return View::redirect('/employee/appliedleaves', "Leave applied successfully", "success", 302);
+            }
+        }
+    }
+
+    private function sendLeaveEmail($name, $email, $subject, $message)
+    {
+        try {
+            $config = require (__DIR__ . '/../../../src/smtp.php');
+            $smtp = $config['smtp'];
+
+            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+
+            $mail->isSMTP();
+            $mail->SMTPAuth = true;
+
+            $mail->Host = $smtp['host'];
+            $mail->Username = $smtp['username'];
+            $mail->Password = $smtp['password'];
+
+            $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            $mail->setFrom($smtp['from'], "Leave Management System");
+            $mail->addAddress($email, $name);
+
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+
+            $mail->Body = "
+                <h3>Hello $name,</h3>
+                <p>$message</p>
+                <br>
+                <small>Leave Management System</small>
+            ";
+
+            $mail->send();
+
+        } catch (\Exception $e) {
+            error_log("Mail Error: " . $e->getMessage());
         }
     }
 

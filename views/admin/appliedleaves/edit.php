@@ -97,7 +97,10 @@ if ($from_date && $to_date) {
                   </div>
                 <?php endif; ?>
                 <div class="col-md-12 mb-3">
-                  <button type="submit" name="update_leave" class="btn btn-warning float-end">Update</button>
+                  <button type="submit" id="updateBtn" name="update_leave" class="btn btn-warning float-end">Update</button>
+                  <!-- <button id="updateBtn" type="submit" name="update_leave" class="btn btn-warning float-end">
+                      Update
+                  </button> -->
                 </div>
               </div>
             </form>
@@ -131,6 +134,18 @@ if ($from_date && $to_date) {
 
   calculateDays();
 </script>
+
+<script>
+document.querySelector("form").addEventListener("submit", function () {
+
+    const btn = document.getElementById("updateBtn");
+
+    btn.disabled = true;
+    btn.innerHTML = "Updating...";
+
+});
+</script>
+
 
 <?php
 require __DIR__ . "/../components/footer.php";

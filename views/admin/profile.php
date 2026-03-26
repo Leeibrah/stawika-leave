@@ -1,5 +1,6 @@
 <?php
 $profile = $data ? $data->user[0] : null;
+\app\messages\AlertMessage::display(); 
 ?>
 
 <!-- PROFILE -->
@@ -16,7 +17,7 @@ $profile = $data ? $data->user[0] : null;
           <h4>Edit Profile</h4>
         </div>
         <div class="card-body">
-          <form>
+          <!-- <form>
             <div class="form-group">
               <label for="name">Name</label>
               <input name="name" type="text" class="form-control"
@@ -26,13 +27,34 @@ $profile = $data ? $data->user[0] : null;
               <label for="email">Email</label>
               <input name="email" type="email" class="form-control" value="<?= $profile->email ?>" />
             </div>
+            
+          </form> -->
+          <form action="/admin/profile/update" method="POST">
+
             <div class="form-group">
-              <label for="bio">Bio</label>
-              <textarea name="editUserBio" class="form-control">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid unde at fugiat explicabo temporibus, tempora animi sunt iusto quod beatae optio veritatis velit natus odit error! Possimus esse quisquam quibusdam eveniet autem! Minus dolore quisquam nemo similique doloribus perspiciatis tempore.
-                  </textarea>
+              <label>First Name</label>
+              <input name="first_name" type="text" class="form-control"
+                value="<?= $profile->first_name ?>" required />
             </div>
+
+            <div class="form-group">
+              <label>Last Name</label>
+              <input name="last_name" type="text" class="form-control"
+                value="<?= $profile->last_name ?>" required />
+            </div>
+
+            <div class="form-group">
+              <label>Email</label>
+              <input name="email" type="email" class="form-control"
+                value="<?= $profile->email ?>" required />
+            </div>
+
+            <button type="submit" name="update_profile" class="btn btn-primary">
+              Update Profile
+            </button>
+
           </form>
+
         </div>
       </div>
     </div>
