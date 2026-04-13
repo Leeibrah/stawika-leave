@@ -39,7 +39,7 @@ $user_id = $data ? $data->user_id : null;
                 </select>
               </div>
               <div class="col-md-12 mb-3">
-                <label class="form-label" for="">Description</label>
+                <label class="form-label" for="">Add Description and your leave relievers below</label>
                 <textarea type="text" name="description" class="form-control" rows="3"
                   placeholder="Applying this Leave for the reason,,," required></textarea>
               </div>
