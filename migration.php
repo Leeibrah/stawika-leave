@@ -89,6 +89,16 @@ function defineTableSchemas($tableName, Migration $migration)
 //            });
 
             break;
+        case 'activity_logs':
+            $migration->executeTable('activity_logs', function ($table) {
+                $table->increments('id');
+                $table->foreign('user_id')->references('users', 'id')->cascade()->onDelete()->comments("User this activity log entry belongs to");
+                $table->foreign('appliedleave_id')->references('appliedleaves', 'id')->cascade()->onDelete()->comments("Related leave application");
+                $table->string('action', 100)->required()->comments("Short action key, e.g. leave_applied");
+                $table->string('description', 500)->required()->comments("Human readable description of the activity");
+                $table->timestamps();
+            });
+            break;
         default:
             echo "No migration defined for table '$tableName'.\n";
     }
@@ -105,7 +115,7 @@ if ($tableName) {
     defineTableSchemas($tableName, $migration);
 } else {
     // Migrate all tables
-    $tables = ['departments', 'roles', 'leavetypes', 'users', 'appliedleaves'];
+    $tables = ['departments', 'roles', 'leavetypes', 'users', 'appliedleaves', 'activity_logs'];
     foreach ($tables as $table) {
         defineTableSchemas($table, $migration);
     }

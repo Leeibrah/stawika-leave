@@ -201,6 +201,38 @@ class LeaveController extends Controller
 
                     // Send email
                     $this->sendLeaveEmail($name, $email, $subject, $message);
+
+                    // ✅ Record activity for both the employee and the admin who acted
+                    $leaveTypeName = $leave->leavetype ? $leave->leavetype->name : 'Leave';
+
+                    $statusLabel = [
+                        'accepted' => 'approved',
+                        'rejected' => 'rejected',
+                    ][$data['status']] ?? $data['status'];
+
+                    $actionKey = [
+                        'accepted' => 'leave_approved',
+                        'rejected' => 'leave_rejected',
+                    ][$data['status']] ?? 'leave_status_updated';
+
+                    \app\models\ActivityLog::record(
+                        $user->id,
+                        $leave->id,
+                        $actionKey,
+                        "Your {$leaveTypeName} leave from {$leave->from_date} to {$leave->to_date} was {$statusLabel}"
+                    );
+
+                    $adminEmail = $_SESSION['auth_user']['user_email'] ?? null;
+                    $admin = $adminEmail ? \app\models\User::model()->where(['email' => $adminEmail])->get() : [];
+
+                    if ($admin) {
+                        \app\models\ActivityLog::record(
+                            $admin[0]->id,
+                            $leave->id,
+                            $actionKey,
+                            "You {$statusLabel} {$name}'s {$leaveTypeName} leave from {$leave->from_date} to {$leave->to_date}"
+                        );
+                    }
                 }
 
                 // EXISTING RESPONSE LOGIC (UNCHANGED)

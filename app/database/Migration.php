@@ -61,16 +61,7 @@ class Migration
 
     public function dropTable($tableName)
     {
-        // Disable foreign key checks to avoid constraint errors
-        $this->db->getConnection()->exec("SET FOREIGN_KEY_CHECKS=0");
-
-        // Drop the table
-        $this->db->getConnection()->exec("DROP TABLE IF EXISTS $tableName");
-
-        // Re-enable foreign key checks
-        $this->db->getConnection()->exec("SET FOREIGN_KEY_CHECKS=1");
-
-        echo "\033[1;32mTable '$tableName' dropped successfully.\033[0m\n";
+        echo "\033[1;33mDrop table operation is disabled in this environment. No tables were dropped.\033[0m\n";
     }
 
     public function tableExists($tableName)
@@ -91,16 +82,7 @@ class Migration
             $startTime = microtime(true); // Start timing
 
             if ($this->tableExists($tableName)) {
-                echo "\033[1;31mTable $tableName already exists.\033[0m\n"; // Red for existing table
-                $response = readline("Do you want to drop the existing table and proceed with migration? (yes/no): ");
-                if (empty($response) || strtolower($response) === 'yes' || strtolower($response) === 'y') {
-                    $this->dropTable($tableName);
-                    $this->createTable($tableName, $callback);
-                    $duration = round(microtime(true) - $startTime); // Calculate duration
-                    echo "\033[1;32m[\033[1;34m$tableName table migration \033[0;36m" . $this->current_time() . "\033[1;32m] \033[1;37mSuccess! -----> {$duration}s\033[0m\n\n"; // Green for success, with spacing
-                } else {
-                    echo "\033[1;33mMigration for table $tableName skipped.\033[0m\n\n"; // Yellow for skipped, with spacing
-                }
+                echo "\033[1;33mTable $tableName already exists. Migration skipped to avoid data loss.\033[0m\n\n";
             } else {
                 $this->createTable($tableName, $callback);
                 $duration = round(microtime(true) - $startTime); // Calculate duration

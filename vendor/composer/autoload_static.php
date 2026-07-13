@@ -15,14 +15,29 @@ class ComposerStaticInit24dc69f1fe0f25479757a0d315d30a37
         array (
             'app\\' => 4,
         ),
+        'Z' =>
+        array (
+            'ZipStream\\' => 10,
+        ),
         'P' =>
         array (
+            'Psr\\SimpleCache\\' => 16,
             'Psr\\Container\\' => 14,
+            'PhpOffice\\PhpSpreadsheet\\' => 25,
             'PHPMailer\\PHPMailer\\' => 20,
+        ),
+        'M' =>
+        array (
+            'Matrix\\' => 7,
         ),
         'F' =>
         array (
             'Faker\\' => 6,
+        ),
+        'C' =>
+        array (
+            'Composer\\Pcre\\' => 14,
+            'Complex\\' => 8,
         ),
     );
 
@@ -31,17 +46,41 @@ class ComposerStaticInit24dc69f1fe0f25479757a0d315d30a37
         array (
             0 => __DIR__ . '/../..' . '/app',
         ),
+        'ZipStream\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
+        ),
+        'Psr\\SimpleCache\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
         'Psr\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'PhpOffice\\PhpSpreadsheet\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
         ),
         'PHPMailer\\PHPMailer\\' =>
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
+        'Matrix\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/markbaker/matrix/classes/src',
+        ),
         'Faker\\' =>
         array (
             0 => __DIR__ . '/..' . '/fakerphp/faker/src/Faker',
+        ),
+        'Composer\\Pcre\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/composer/pcre/src',
+        ),
+        'Complex\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
         ),
     );
 

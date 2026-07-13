@@ -46,7 +46,7 @@ class Seeder
                 echo "No seeding defined for table '$tableName'.";
         }
     }
-    public function seedUsers($count = 5)
+    public function seedUsers($count = 1)
     {
         $startTime = microtime(as_float: true);
         $faker = FakerFactory::create();

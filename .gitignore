@@ -10,3 +10,9 @@
 # global.php
 # .idea/
 
+# Generated leave export report and its run state (server-side output, not source)
+storage/exports/*.xlsx
+storage/exports/*.tmp
+storage/exports/.last_export_id
+storage/exports/.export.lock
+

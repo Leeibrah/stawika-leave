@@ -136,6 +136,67 @@ class DashboardController extends Controller
         exit;
     }
 
+    public function settings()
+    {
+        $headerTitle = 'Settings';
+        if (isset($_SESSION['message']) && isset($_SESSION['message_code'])) {
+            return View::render('admin.settings', [], $headerTitle, $_SESSION['message'], $_SESSION['message_code'], 200);
+        }
+        return View::render('admin.settings', [], $headerTitle, $message = null, $messageCode = null, 200);
+    }
+
+    public function updatePassword($request)
+    {
+        $email = $_SESSION['auth_user']['user_email'];
+        $users = User::model()->where(['email' => $email])->get();
+
+        if (!$users || count($users) === 0) {
+            return View::redirect('/admin/settings', "User not found", "danger", 302);
+        }
+
+        $user = $users[0];
+
+        $currentPassword = $request['current_password'] ?? '';
+        $newPassword     = $request['new_password'] ?? '';
+        $confirmPassword = $request['confirm_password'] ?? '';
+
+        if (!password_verify($currentPassword, $user->password)) {
+            return View::redirect('/admin/settings', "Current password is incorrect", "danger", 302);
+        }
+
+        if (strlen($newPassword) < 8) {
+            return View::redirect('/admin/settings', "New password must be at least 8 characters", "danger", 302);
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            return View::redirect('/admin/settings', "New password and confirmation do not match", "danger", 302);
+        }
+
+        $user->password = $newPassword;
+        $updated = $user->update();
+
+        if ($updated) {
+            return View::redirect('/admin/settings', "Password updated successfully", "success", 302);
+        }
+
+        return View::redirect('/admin/settings', "Failed to update password", "danger", 302);
+    }
+
+    public function activityLog()
+    {
+        $email = $_SESSION['auth_user']['user_email'];
+        $user = User::model()->where(['email' => $email])->get()[0];
+
+        $activities = \app\models\ActivityLog::forUser($user->id);
+
+        $viewData = [
+            'activities' => $activities,
+        ];
+
+        $headerTitle = 'Activity Log';
+        return View::render('admin.activity-log', $viewData, $headerTitle, $message = null, $messageCode = null, 200);
+    }
+
     // Method to handle the admin dashboard action
     public function dashboard()
     {

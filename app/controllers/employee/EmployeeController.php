@@ -97,6 +97,67 @@ class EmployeeController extends Controller
         exit;
     }
 
+    public function employeeSettings()
+    {
+        $headerTitle = 'Settings';
+        if (isset($_SESSION['message']) && isset($_SESSION['message_code'])) {
+            return View::render('employee.settings', [], $headerTitle, $_SESSION['message'], $_SESSION['message_code'], 200);
+        }
+        return View::render('employee.settings', [], $headerTitle, $message = null, $messageCode = null, 200);
+    }
+
+    public function updatePassword($request)
+    {
+        $email = $_SESSION['auth_user']['user_email'];
+        $users = User::model()->where(['email' => $email])->get();
+
+        if (!$users || count($users) === 0) {
+            return View::redirect('/employee/settings', "User not found", "danger", 302);
+        }
+
+        $user = $users[0];
+
+        $currentPassword = $request['current_password'] ?? '';
+        $newPassword     = $request['new_password'] ?? '';
+        $confirmPassword = $request['confirm_password'] ?? '';
+
+        if (!password_verify($currentPassword, $user->password)) {
+            return View::redirect('/employee/settings', "Current password is incorrect", "danger", 302);
+        }
+
+        if (strlen($newPassword) < 8) {
+            return View::redirect('/employee/settings', "New password must be at least 8 characters", "danger", 302);
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            return View::redirect('/employee/settings', "New password and confirmation do not match", "danger", 302);
+        }
+
+        $user->password = $newPassword;
+        $updated = $user->update();
+
+        if ($updated) {
+            return View::redirect('/employee/settings', "Password updated successfully", "success", 302);
+        }
+
+        return View::redirect('/employee/settings', "Failed to update password", "danger", 302);
+    }
+
+    public function employeeActivityLog()
+    {
+        $email = $_SESSION['auth_user']['user_email'];
+        $user = User::model()->where(['email' => $email])->get()[0];
+
+        $activities = \app\models\ActivityLog::forUser($user->id);
+
+        $viewData = [
+            'activities' => $activities,
+        ];
+
+        $headerTitle = 'Activity Log';
+        return View::render('employee.activity-log', $viewData, $headerTitle, $message = null, $messageCode = null, 200);
+    }
+
     public function employeeDepartment()
     {
         $email = $_SESSION['auth_user']['user_email'];
@@ -227,8 +288,10 @@ class EmployeeController extends Controller
     {
         if (isset($request['apply_leave'])) {
 
+            $appliedById = $this->parseInput($request['applied_by']);
+
             $leave = new AppliedLeave();
-            $leave->applied_by   = $this->parseInput($request['applied_by']);
+            $leave->applied_by   = $appliedById;
             $leave->leavetype_id = $this->parseInput($request['leavetype_id']);
             $leave->description  = $this->parseInput($request['description']);
             $leave->from_date    = date('Y-m-d', strtotime($request['from_date']));
@@ -246,6 +309,15 @@ class EmployeeController extends Controller
                 $employeeEmail = $_SESSION['auth_user']['user_email'];
                 $employeeName  = $_SESSION['auth_user']['user_name'];
 
+                $leaveTypeName = $leave->leavetype ? $leave->leavetype->name : 'Leave';
+
+                \app\models\ActivityLog::record(
+                    $appliedById,
+                    $response['data']->id,
+                    'leave_applied',
+                    "Applied for {$leaveTypeName} leave from {$leave->from_date} to {$leave->to_date}"
+                );
+
                 // ✅ Get admins (assuming role = admin)
                 $admins = \app\models\User::model()->where(['role_id' => 1])->get();
 
@@ -260,12 +332,14 @@ class EmployeeController extends Controller
                 // ✅ Send email to all admins
                 if ($admins) {
                     foreach ($admins as $admin) {
+                        $adminMessage = "{$employeeName} applied for leave from {$leave->from_date} to {$leave->to_date}.<br><br>" .
+                                        "<strong>Leave reason:</strong><br>" . nl2br(htmlspecialchars($leave->description));
+
                         $this->sendLeaveEmail(
                             $admin->first_name . ' ' . $admin->last_name,
                             $admin->email,
                             "New Leave Application",
-                            "{$employeeName} applied for leave from {$leave->from_date} to {$leave->to_date}.",
-                            "Login to https://leave.stawika.co.ke to check the status of the leave request."
+                            $adminMessage
                         );
                     }
                 }

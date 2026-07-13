@@ -77,7 +77,10 @@ Route::group('sessionAuth', function () {
     // dashboard admin
     Route::get('/admin/profile', ['controller' => DashboardController::class, 'method' => 'profile']);
     Route::post('/admin/profile/update', ['controller' => DashboardController::class, 'method' => 'updateProfile']);
-    
+    Route::get('/admin/settings', ['controller' => DashboardController::class, 'method' => 'settings']);
+    Route::post('/admin/settings/password', ['controller' => DashboardController::class, 'method' => 'updatePassword']);
+    Route::get('/admin/activity-log', ['controller' => DashboardController::class, 'method' => 'activityLog']);
+
     Route::get('/admin/dashboard', ['controller' => DashboardController::class, 'method' => 'dashboard']);
     Route::post('/admin/logout', ['controller' => DashboardController::class, 'method' => 'logout']);
 
@@ -88,6 +91,9 @@ Route::group('sessionAuth', function () {
     Route::get('/employee/department', ['controller' => EmployerController::class, 'method' => 'employeeDepartment']);
     Route::get('/employee/profile', ['controller' => EmployerController::class, 'method' => 'employeeProfile']);
     Route::post('/employee/profile/update', ['controller' => EmployerController::class, 'method' => 'updateProfile']);
+    Route::get('/employee/settings', ['controller' => EmployerController::class, 'method' => 'employeeSettings']);
+    Route::post('/employee/settings/password', ['controller' => EmployerController::class, 'method' => 'updatePassword']);
+    Route::get('/employee/activity-log', ['controller' => EmployerController::class, 'method' => 'employeeActivityLog']);
     Route::post('/employee/logout', ['controller' => EmployerController::class, 'method' => 'employeeLogout']);
     Route::get('/employee/appliedleaves', ['controller' => EmployerController::class, 'method' => 'employeeAppliedleaves']);
     Route::get('/employee/leavetypes', ['controller' => EmployerController::class, 'method' => 'employeeLeavetypes']);
