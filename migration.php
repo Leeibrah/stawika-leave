@@ -23,7 +23,7 @@ function defineTableSchemas($tableName, Migration $migration)
                 $table->foreign('role_id')->default(3)->references('roles', 'id')->cascade()->onDelete()->comments("Foreign key to roles table");
                 $table->string('status')->required()->default('active')->comments("User status");
                 $table->string('reset_token', 255)->nullable()->comments("User's reset token");
-                $table->date('reset_token_expiration')->nullable()->comments("Expiration date for reset token");
+                $table->dateTime('reset_token_expiration')->nullable()->comments("Expiration date and time for reset token");
                 $table->timestamps();
             });
             break;

@@ -1,9 +1,3 @@
-<?php
-
-// Register Body
-require __DIR__ ."/components/reset_password.php";
-?>
-
 <main id="forgot-password">
     <?php require __DIR__ ."/messages/message.php"; ?>
     <div class="row justify-content-center">

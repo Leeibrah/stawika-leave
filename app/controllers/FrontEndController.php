@@ -68,11 +68,9 @@ class FrontEndController extends Controller
         }
 
         // Check if the reset token is valid and not expired
-        $user = User::model()->where(['reset_token' => $reset_token])
-            ->where(['reset_token_expiration', '>', date('Y-m-d H:i:s')])
-            ->one();
+        $user = User::model()->where(['reset_token' => $reset_token])->one();
 
-        if ($user) {
+        if ($user && $user->reset_token_expiration && strtotime($user->reset_token_expiration) > time()) {
             // Token is valid, show the reset password form
             return View::render('frontend.reset_password', ['token' => $reset_token]);
         } else {
@@ -133,29 +131,27 @@ class FrontEndController extends Controller
             $confirm_password = $this->parseInput($request['confirm_password']);
 
             if ($new_password === $confirm_password) {
-                $new_password_hash = password_hash($new_password, PASSWORD_BCRYPT);
-
                 // Check if the reset token is valid and not expired
-                $user = User::model()->where(['reset_token' => $reset_token])
-                    ->where(['reset_token_expiration', '>', date('Y-m-d H:i:s')])
-                    ->one();
+                $user = User::model()->where(['reset_token' => $reset_token])->one();
+                $tokenValid = $user && $user->reset_token_expiration && strtotime($user->reset_token_expiration) > time();
 
-                if ($user) {
+                if ($tokenValid) {
                     // Update the user's password and reset token fields
-                    $user->password = $new_password_hash;
+                    // (assign the plain password - __set() hashes it once)
+                    $user->password = $new_password;
                     $user->reset_token = null;
                     $user->reset_token_expiration = null;
 
-                    $response = $user->save();
+                    $updated = $user->update();
 
-                    if ($response['status'] === 'success') {
+                    if ($updated) {
                         $_SESSION['message'] = "Password reset successfully.";
                         $_SESSION['message_code'] = "success";
                         return View::redirect('/login', "Password reset successfully. You can now log in.", "success", 302);
                     } else {
                         $_SESSION['message'] = "Failed to reset password. Please try again.";
                         $_SESSION['message_code'] = "error";
-                        return View::redirect('/reset_password?code={$reset_token}', "Failed to reset password. Please try again.", "error", 302);
+                        return View::redirect("/reset_password?code={$reset_token}", "Failed to reset password. Please try again.", "error", 302);
                     }
                 } else {
                     $_SESSION['message'] = "Invalid or expired reset token.";
@@ -165,7 +161,7 @@ class FrontEndController extends Controller
             } else {
                 $_SESSION['message'] = "Password and confirm password do not match.";
                 $_SESSION['message_code'] = "error";
-                return View::redirect('/reset_password?code={$reset_token}', "Password and confirm password do not match.", "error", 302);
+                return View::redirect("/reset_password?code={$reset_token}", "Password and confirm password do not match.", "error", 302);
             }
         }
     }
@@ -340,6 +336,8 @@ class FrontEndController extends Controller
 
             $mail->Body = $mail_template;
             $mail->send();
+
+            return true;
         } catch (Exception $e) {
             $_SESSION['message'] = $e->errorMessage();
             $_SESSION['message_code'] = "error";

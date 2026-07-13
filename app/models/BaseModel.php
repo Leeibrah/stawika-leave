@@ -283,8 +283,25 @@ class BaseModel
 
     public function one()
     {
-        $stmt = $this->db->getConnection()->query("SELECT * FROM {$this->tableName} LIMIT 1");
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $query = "SELECT * FROM {$this->tableName} WHERE 1=1" . $this->where . $this->whereLike . $this->orderBy . " LIMIT 1";
+        $stmt = $this->db->getConnection()->prepare($query);
+        foreach ($this->params as $key => $value) {
+            $paramType = is_int($value) ? PDO::PARAM_INT : (is_bool($value) ? PDO::PARAM_BOOL : (is_null($value) ? PDO::PARAM_NULL : PDO::PARAM_STR));
+            $stmt->bindValue($key + 1, $value, $paramType);
+        }
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $this->resetConditions();
+
+        if (!$result) {
+            return null;
+        }
+
+        $instance = new static();
+        $instance->attributes = $result;
+        $instance->loadEagerRelations();
+        return $instance;
     }
 
     public function __set($name, $value)
