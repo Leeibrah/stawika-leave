@@ -340,11 +340,14 @@ class EmployeeController extends Controller
                 $admins = \app\models\User::model()->where(['role_id' => 1])->get();
 
                 // ✅ Send email to employee
+                $employeeMessage = "Your leave from {$leave->from_date} to {$leave->to_date} has been submitted successfully.<br><br>" .
+                                    "<strong>Leave reason:</strong><br>" . nl2br(htmlspecialchars($leave->description));
+
                 $this->sendLeaveEmail(
                     $employeeName,
                     $employeeEmail,
                     "Leave Application Submitted",
-                    "Your leave from {$leave->from_date} to {$leave->to_date} has been submitted successfully."
+                    $employeeMessage
                 );
 
                 // ✅ Send email to all admins
