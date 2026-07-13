@@ -176,10 +176,14 @@ class EmployeeController extends Controller
                 $employee->status = isset($request['status']) == true ? 'active' : 'disabled';
                 $employee->verify_status = $this->parseInput($request['verify_status']);
 
-                if ($employee->update()) {
-                    echo json_encode(['status' => 'success', 'message' => "Employee updated Successfully", 'redirect' => '/admin/employees']);
-                } else {
-                    echo json_encode(['status' => 'danger', 'message' => "Error occurred processing! contact administrator", 'redirect' => false]);
+                try {
+                    if ($employee->update()) {
+                        echo json_encode(['status' => 'success', 'message' => "Employee updated Successfully", 'redirect' => '/admin/employees']);
+                    } else {
+                        echo json_encode(['status' => 'danger', 'message' => "Error occurred processing! contact administrator", 'redirect' => false]);
+                    }
+                } catch (\Exception $e) {
+                    echo json_encode(['status' => 'danger', 'message' => $e->getMessage(), 'redirect' => false]);
                 }
                 exit();
             } else {

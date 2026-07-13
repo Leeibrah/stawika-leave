@@ -52,7 +52,7 @@ $user_id = $data ? $data->user_id : null;
                 <input type="date" name="to_date" min=<?php echo date('Y-m-d'); ?> class="form-control" required>
               </div>
               <div class="col-md-12 mb-3 ">
-                <input type="submit" name="apply_leave" value="Submit" class="btn btn-primary float-end">
+                <button type="submit" name="apply_leave" value="Submit" class="btn btn-primary float-end">Submit</button>
               </div>
             </div>
           </form>

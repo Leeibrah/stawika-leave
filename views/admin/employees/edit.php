@@ -33,7 +33,7 @@
                 <div class="col-md-6 mb-3">
                   <label for="">Email</label>
                   <input type="email" name="email" value="<?= $data->employee[0]->email; ?>" class="form-control"
-                    readonly>
+                    required>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="department_id">Department</label>
