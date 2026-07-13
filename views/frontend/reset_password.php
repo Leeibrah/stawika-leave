@@ -12,17 +12,18 @@
                                     <h1 class="h4 text-gray-900 mb-2">Create New Password</h1>
                                     <p class="mb-4 text-success">Reset your password before reset link expires!</p>
                                     <form class="user" action="/new_password" method="post">
+                                        <input type="hidden" name="code" value="<?= htmlspecialchars($data->token ?? '') ?>">
                                         <div class="form-group mb-2">
-                                            <input type="password" name="password" class="form-control form-control-user"
+                                            <input type="password" name="new_password" class="form-control form-control-user"
                                                 id="exampleInputpassword" aria-describedby="passwordHelp"
-                                                placeholder="Enter New Password">
+                                                placeholder="Enter New Password" required minlength="8">
                                         </div>
                                         <div class="form-group mb-2">
                                             <input type="password" name="confirm_password" class="form-control form-control-user"
-                                                id="exampleInputpassword" aria-describedby="emailHelp"
-                                                placeholder="Enter Confirmation Password">
+                                                id="exampleInputconfirmpassword" aria-describedby="emailHelp"
+                                                placeholder="Enter Confirmation Password" required minlength="8">
                                         </div>
-                                        <button type="submit" name="submitreset"
+                                        <button type="submit" name="reset_password"
                                             class="btn btn-primary btn-user btn-block">Reset
                                             password</button>
                                     </form>
