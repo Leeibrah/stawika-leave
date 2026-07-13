@@ -9,6 +9,7 @@
 <script src="/views/assets/frontend/js/bootstrap5.bundle.min.js"></script>
 <script src="/views/assets/frontend/js/main.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.3/swiper-bundle.min.js"></script>
+<script src="/views/assets/js/form-loading.js"></script>
 </main>
 </body>
 

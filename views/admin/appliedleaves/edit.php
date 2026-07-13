@@ -112,24 +112,6 @@ if ($from_date && $to_date) {
   </div>
 </div>
 
-<div id="loaderOverlay" style="
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-">
-    <div style="text-align:center; color:white;">
-        <div class="spinner-border text-light" style="width:3rem; height:3rem;"></div>
-        <p style="margin-top:10px;">Processing... Please wait</p>
-    </div>
-</div>
-
 <script>
   function calculateDays() {
     const fromDate = document.getElementById('from_date').value;
@@ -150,27 +132,6 @@ if ($from_date && $to_date) {
   document.getElementById('to_date').addEventListener('change', calculateDays);
 
   calculateDays();
-</script>
-
-<script>
-document.querySelector("form[action*='update']").addEventListener("submit", function () {
-
-    console.log("Form submitted"); // ✅ DEBUG LINE
-
-    const btn = document.getElementById("updateBtn");
-    const loader = document.getElementById("loaderOverlay");
-
-    console.log(btn);
-    console.log(loader);
-
-    // Disable button
-    btn.disabled = true;
-    btn.innerText = "Updating...";
-
-    // Show loader
-    loader.style.display = "flex";
-
-});
 </script>
 
 <?php

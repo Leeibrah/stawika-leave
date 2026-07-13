@@ -109,7 +109,8 @@ class Seeder
             'Customer Service',
             'Research and Development',
             'Business Development',
-            'Executive'
+            'Executive',
+            'Recovery'
         ];
 
         for ($i = 0; $i < $count; $i++) {
@@ -209,7 +210,8 @@ class Seeder
             ['name' => 'Civic Duty', 'description' => 'Leave taken to fulfill civic responsibilities, such as local government duties.'],
             ['name' => 'Compassionate', 'description' => 'Leave taken to manage a serious personal or family crisis.'],
             ['name' => 'Short-Term Disability', 'description' => 'Leave taken for short-term medical conditions that prevent work.'],
-            ['name' => 'Long-Term Disability', 'description' => 'Extended leave for long-term medical conditions or disabilities.']
+            ['name' => 'Long-Term Disability', 'description' => 'Extended leave for long-term medical conditions or disabilities.'],
+            ['name' => 'Half Day', 'description' => 'Leave taken for a half a day.']
         ];
 
         // Limit the number of records to the count specified or the number available, whichever is smaller

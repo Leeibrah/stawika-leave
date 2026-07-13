@@ -8,6 +8,7 @@
 <script src="/views/assets/js/PaginationTable.js"></script>
 <!-- <script src="/views/assets/js/app.js"></script> -->
 <script src="/views/assets/js/main.js"></script>
+<script src="/views/assets/js/form-loading.js"></script>
 </body>
 
 </html>
