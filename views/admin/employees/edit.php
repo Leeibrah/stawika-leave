@@ -95,8 +95,8 @@
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="">Password</label>
-                  <input type="password" name="password" value="<?= $data->employee[0]->password; ?>"
-                    class="form-control">
+                  <input type="password" name="password" placeholder="Leave blank to keep current password"
+                    class="form-control" autocomplete="new-password">
                 </div>
                 <div class="col-md-6 mb-3">
                   <button type="submit" name="update_employee" class="btn btn-primary">Update</button>

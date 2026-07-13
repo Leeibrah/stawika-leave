@@ -89,7 +89,7 @@ class EmployeeController extends Controller
             $employee->email = $this->parseInput($request['email']);
             $password = $this->parseInput($request['password']);
             $confirm_password = $this->parseInput($request['confirm_password']);
-            $employee->password = password_hash($password, PASSWORD_DEFAULT);
+            $employee->password = $password;
             $employee->role_id = $this->parseInput($request['role_id']);
             $employee->status = isset($request['status']) == true ? 'active' : 'disabled';
             // Dummy way for verify token 
@@ -168,8 +168,10 @@ class EmployeeController extends Controller
                 $employee->gender = $this->parseInput($request['gender']);
                 $employee->department_id = $this->parseInput($request['department_id']);
                 $employee->email = $this->parseInput($request['email']);
-                $password = $this->parseInput($request['password']);
-                $employee->password = password_hash($password, PASSWORD_BCRYPT);
+                $password = $this->parseInput($request['password'] ?? '');
+                if ($password !== '') {
+                    $employee->password = $password;
+                }
                 $employee->role_id = $this->parseInput($request['role_id']);
                 $employee->status = isset($request['status']) == true ? 'active' : 'disabled';
                 $employee->verify_status = $this->parseInput($request['verify_status']);

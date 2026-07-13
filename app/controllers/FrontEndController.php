@@ -175,7 +175,7 @@ class FrontEndController extends Controller
             $user->gender = $this->parseInput($request['gender']);
             $user->department_id = $this->parseInput($request['department_id']);
             $user->email = $this->parseInput($request['email']);
-            $user->password = password_hash($request['password'], PASSWORD_DEFAULT);
+            $user->password = $request['password'];
             $user->verify_token = md5(rand());
 
             if ($request['password'] == $request['confirm_password']) {
