@@ -145,9 +145,27 @@ class FrontEndController extends Controller
                     $updated = $user->update();
 
                     if ($updated) {
-                        $_SESSION['message'] = "Password reset successfully.";
-                        $_SESSION['message_code'] = "success";
-                        return View::redirect('/login', "Password reset successfully. You can now log in.", "success", 302);
+                        // Log the user straight in with the new password instead of
+                        // sending them back to /login to re-enter it.
+                        if ($user->verify_status === 'pending') {
+                            return View::redirect('/login', "Password reset successfully. Verify your account and log in.", "success", 302);
+                        }
+
+                        $_SESSION['auth'] = true;
+                        $_SESSION['auth_role'] = $user->role->name;
+                        $_SESSION['auth_user'] = [
+                            'user_email' => $user->email,
+                            'user_name' => $user->first_name . ' ' . $user->last_name,
+                        ];
+                        $_SESSION['session_start_time'] = time();
+
+                        if ($_SESSION['auth_role'] === 'admin') {
+                            return View::redirect('/admin/dashboard', "Password reset successfully. Welcome back!", "success", 302);
+                        } elseif ($_SESSION['auth_role'] === 'employee') {
+                            return View::redirect('/employee/dashboard', "Password reset successfully. Welcome back!", "success", 302);
+                        } else {
+                            return View::redirect('/login', "Password reset successfully. You can now log in.", "success", 302);
+                        }
                     } else {
                         $_SESSION['message'] = "Failed to reset password. Please try again.";
                         $_SESSION['message_code'] = "error";
