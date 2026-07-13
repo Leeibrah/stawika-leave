@@ -147,11 +147,13 @@ class DashboardController extends Controller
 
     public function updatePassword($request)
     {
+        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
         $email = $_SESSION['auth_user']['user_email'];
         $users = User::model()->where(['email' => $email])->get();
 
         if (!$users || count($users) === 0) {
-            return View::redirect('/admin/settings', "User not found", "danger", 302);
+            return $this->passwordUpdateResponse($isAjax, false, "User not found");
         }
 
         $user = $users[0];
@@ -161,25 +163,41 @@ class DashboardController extends Controller
         $confirmPassword = $request['confirm_password'] ?? '';
 
         if (!password_verify($currentPassword, $user->password)) {
-            return View::redirect('/admin/settings', "Current password is incorrect", "danger", 302);
+            return $this->passwordUpdateResponse($isAjax, false, "Current password is incorrect");
         }
 
         if (strlen($newPassword) < 8) {
-            return View::redirect('/admin/settings', "New password must be at least 8 characters", "danger", 302);
+            return $this->passwordUpdateResponse($isAjax, false, "New password must be at least 8 characters");
         }
 
         if ($newPassword !== $confirmPassword) {
-            return View::redirect('/admin/settings', "New password and confirmation do not match", "danger", 302);
+            return $this->passwordUpdateResponse($isAjax, false, "New password and confirmation do not match");
         }
 
         $user->password = $newPassword;
         $updated = $user->update();
 
         if ($updated) {
-            return View::redirect('/admin/settings', "Password updated successfully", "success", 302);
+            return $this->passwordUpdateResponse($isAjax, true, "Password updated successfully");
         }
 
-        return View::redirect('/admin/settings', "Failed to update password", "danger", 302);
+        return $this->passwordUpdateResponse($isAjax, false, "Failed to update password");
+    }
+
+    private function passwordUpdateResponse($isAjax, $success, $message)
+    {
+        $redirectUrl = '/admin/settings';
+
+        if ($isAjax) {
+            echo json_encode([
+                'status' => $success ? 'success' : 'danger',
+                'message' => $message,
+                'redirect' => $success ? $redirectUrl : false,
+            ]);
+            exit;
+        }
+
+        return View::redirect($redirectUrl, $message, $success ? 'success' : 'danger', 302);
     }
 
     public function activityLog()

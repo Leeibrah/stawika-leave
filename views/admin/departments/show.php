@@ -10,8 +10,7 @@ $department = $data ? $data->department[0] : null;
     </ol>
     <div class="row">
         <div class="col-lg-12 col-xl-12 col-md-12">
-            <div id="alertMessage" class="alert alert-dismissible fade show" role="alert"
-                style="display: none; transition: opacity 1s ease;"></div>
+
             <div class="card">
                 <div class="card-header">
                     <h4>Details

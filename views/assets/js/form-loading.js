@@ -1,20 +1,31 @@
 (function () {
-  function ensureOverlay() {
-    var overlay = document.getElementById('formLoadingOverlay');
-    if (overlay) return overlay;
+  var activeSubmitter = null;
+  var activeSafetyTimeout = null;
 
-    overlay = document.createElement('div');
-    overlay.id = 'formLoadingOverlay';
-    overlay.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100%;height:100%;' +
-      'background:rgba(0,0,0,0.6);z-index:9999;justify-content:center;align-items:center;';
-    overlay.innerHTML =
-      '<div style="text-align:center;color:#fff;">' +
-      '<div class="spinner-border text-light" style="width:3rem;height:3rem;" role="status"></div>' +
-      '<p style="margin-top:10px;">Please wait...</p>' +
-      '</div>';
-    document.body.appendChild(overlay);
-    return overlay;
+  function restore() {
+    if (activeSafetyTimeout) {
+      clearTimeout(activeSafetyTimeout);
+      activeSafetyTimeout = null;
+    }
+    if (!activeSubmitter) return;
+
+    var submitter = activeSubmitter;
+    activeSubmitter = null;
+
+    submitter.disabled = false;
+    if (submitter.dataset.originalText !== undefined) {
+      submitter.innerHTML = submitter.dataset.originalText;
+      delete submitter.dataset.originalText;
+    }
+    if (submitter.dataset.originalValue !== undefined) {
+      submitter.value = submitter.dataset.originalValue;
+      delete submitter.dataset.originalValue;
+    }
   }
+
+  // Exposed so other feedback (e.g. an error toast) can cancel the loading
+  // state immediately instead of waiting on the safety-net timeout below.
+  window.stopFormLoading = restore;
 
   // Capture phase so this always runs, even if a form's own submit handler
   // later calls stopPropagation and skips bubble-phase listeners.
@@ -23,31 +34,32 @@
     if (!(form instanceof HTMLFormElement)) return;
     if (form.hasAttribute('data-no-loading')) return;
 
-    var overlay = ensureOverlay();
-    overlay.style.display = 'flex';
-
     var submitter = event.submitter || form.querySelector('button[type="submit"], input[type="submit"]');
-    if (submitter) {
+    if (!submitter) return;
+
+    // Disabling the submitter synchronously here would strip its name=value
+    // pair from the form data the browser is about to send (disabled controls
+    // are excluded from submission). Defer it to the next tick, after the
+    // browser has already captured what to submit.
+    setTimeout(function () {
       submitter.disabled = true;
       if (submitter.tagName === 'BUTTON') {
         submitter.dataset.originalText = submitter.innerHTML;
         submitter.innerHTML =
           '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please wait...';
+      } else {
+        submitter.dataset.originalValue = submitter.value;
+        submitter.value = 'Please wait...';
       }
-    }
+      activeSubmitter = submitter;
+    }, 0);
 
     // Safety net: if the page never navigates away or updates the DOM
-    // (e.g. an AJAX handler errors silently), restore the form instead of
+    // (e.g. an AJAX handler errors silently), restore the button instead of
     // leaving it stuck disabled forever.
-    setTimeout(function () {
+    activeSafetyTimeout = setTimeout(function () {
       if (!document.body.contains(form)) return;
-      overlay.style.display = 'none';
-      if (submitter) {
-        submitter.disabled = false;
-        if (submitter.dataset.originalText !== undefined) {
-          submitter.innerHTML = submitter.dataset.originalText;
-        }
-      }
+      restore();
     }, 15000);
   }, true);
 })();

@@ -30,8 +30,7 @@ if ($from_date && $to_date) {
   <div class="row">
     <div class="col-md-12">
       <?= app\messages\AlertMessage::display(); ?>
-      <div id="alertMessage" class="alert alert-dismissible fade show" role="alert"
-        style="display: none; transition: opacity 1s ease;"></div>
+
       <div class="card">
         <div class="card-header">
           <h4>Update

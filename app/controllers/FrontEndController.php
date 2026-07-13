@@ -266,11 +266,7 @@ class FrontEndController extends Controller
                     } else {
 
                         if (!password_verify($password, $data->password)) {
-                            // return View::redirect('/login', "incorrect username or password!", "warning", 302);
-
-                            $hash = '$2y$10$/ESGHYOrstqJ8Tlraj8FFODtwM0vpP9pn9uOOOsEN3edo5wEGsMnG';
-
-                            var_dump(password_verify('123456', $hash)); // try your password
+                            return View::redirect('/login', "Incorrect email or password!", "danger", 302);
                         }
 
                         $_SESSION['auth'] = true;

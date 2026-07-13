@@ -43,6 +43,7 @@ include 'authentication.php';
   <!-- Template Main CSS File -->
   <link rel="stylesheet" href="/views/assets/frontend/css/custom.css">
   <link href="/views/assets/css/sb-admin-2.css" rel="stylesheet">
+  <script src="/views/assets/js/toast.js"></script>
 </head>
 
 <body>

@@ -132,57 +132,42 @@ $(document).ready(function () {
 
   $('body').on('submit', 'form', function (event) {
     event.preventDefault();
-    // Get the alert div
-    var alertDiv = $('#alertMessage');
     var form = $(this);
     $.ajax({
       url: form.attr('action'),
       type: form.attr('method') || 'POST',
       data: form.serialize(),
       success: function (response) {
-        // console.log(response);
-        // Parse the response
-        var jsonResponse = JSON.parse(response);
-        alertDiv
-          .addClass('alert-' + jsonResponse.status)
-          .html(jsonResponse.message + ' <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>')
-          .show();
-
-        // Delay content update to allow the alert message to be displayed
-        setTimeout(function () {
-          alertDiv.hide();
-          alertDiv
-            .removeClass('alert-' + jsonResponse.status);
-
-          if (jsonResponse.status === 'success' && jsonResponse.redirect) {
-            if (!jsonResponse.redirect.includes('admin')) {
-              window.location.href = jsonResponse.redirect;
-            } else {
-              // Update content via AJAX and push state
-              updateContent(jsonResponse.redirect, () => {
-                history.pushState({ pageUrl: jsonResponse.redirect }, '', jsonResponse.redirect);
-              });
-            }
+        var jsonResponse;
+        try {
+          jsonResponse = JSON.parse(response);
+        } catch (e) {
+          if (typeof showToast === 'function') {
+            showToast('Something went wrong. Please try again.', 'danger');
           }
+          return;
+        }
 
+        if (typeof showToast === 'function') {
+          showToast(jsonResponse.message, jsonResponse.status);
+        }
 
-        }, 500);
+        if (jsonResponse.status === 'success' && jsonResponse.redirect) {
+          if (!jsonResponse.redirect.includes('admin')) {
+            window.location.href = jsonResponse.redirect;
+          } else {
+            // Update content via AJAX and push state
+            updateContent(jsonResponse.redirect, () => {
+              history.pushState({ pageUrl: jsonResponse.redirect }, '', jsonResponse.redirect);
+            });
+          }
+        }
       },
       error: function (error) {
         console.log(error.response);
-        // Show error message in the alert div
-        var alertDiv = $('#alertMessage');
-        alertDiv
-          .addClass('alert-error')
-          .html('Form submission error. <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>')
-          .show();
-
-        // Hide the alert after 100 milliseconds
-        setTimeout(function () {
-          alertDiv.hide();
-          alertDiv
-            .removeClass('alert-danger');
-        }, 500);
+        if (typeof showToast === 'function') {
+          showToast('Form submission error.', 'danger');
+        }
       }
     });
   });

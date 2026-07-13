@@ -12,8 +12,7 @@ $roles = $data ? $data->roles : null;
   <div class="row mt-4">
     <div class="col-lg-12 col-xl-12 col-md-12">
       <?= app\messages\AlertMessage::display(); ?>
-      <div id="alertMessage" class="alert alert-dismissible fade show" role="alert"
-                style="display: none; transition: opacity 1s ease;"></div>
+
       <div class="card">
         <div class="card-header">
           <h4>Create Employee
